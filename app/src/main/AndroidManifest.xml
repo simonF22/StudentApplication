@@ -24,6 +24,9 @@
         android:theme="@style/Theme.StudentApplication"
         tools:targetApi="31">
         <activity
+            android:name=".CommunicationActivity"
+            android:exported="false" />
+        <activity
             android:name=".PermissionActivity"
             android:exported="true">
             <intent-filter>
