@@ -24,16 +24,18 @@ import com.example.studentapplication.peerlist.PeerListAdapter
 import com.example.studentapplication.peerlist.PeerListAdapterInterface
 import com.example.studentapplication.wifidirect.WifiDirectInterface
 import com.example.studentapplication.wifidirect.WifiDirectManager
+import com.example.studentapplication.chatlist.ChatListAdapter
 
 class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerListAdapterInterface {
     private var wfdManager: WifiDirectManager? = null
     private var peerListAdapter:PeerListAdapter? = null
+    private var chatListAdapter:ChatListAdapter? = null
 
     private var wfdAdapterEnabled = false
     private var wfdHasConnection = false
     private var hasDevices = false
 
-    // Declare the input field and button
+    //the input field and button
     private lateinit var etEnterStudentID: EditText
     private lateinit var btnSearchForClass: View
 
@@ -69,6 +71,11 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val peerList: RecyclerView= findViewById(R.id.rvPeerListing)
         peerList.adapter = peerListAdapter
         peerList.layoutManager = LinearLayoutManager(this)
+
+        chatListAdapter = ChatListAdapter()
+        val chat: RecyclerView = findViewById(R.id.rvChat)
+        chat.adapter = chatListAdapter
+        chat.layoutManager = LinearLayoutManager(this)
 
 
     }
@@ -166,6 +173,9 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
 
         val noPeersMessage: TextView = findViewById(R.id.tvNoPeersMessage)
         noPeersMessage.visibility = if (wfdAdapterEnabled && !wfdHasConnection && !hasDevices && isValidStudentID()) View.VISIBLE else View.GONE
+
+        val peerList: RecyclerView = findViewById(R.id.rvPeerListing)
+        peerList.visibility = if (wfdAdapterEnabled && !wfdHasConnection && hasDevices && isValidStudentID()) View.VISIBLE else View.GONE
 
         val wfdConnectedView:ConstraintLayout = findViewById(R.id.clHasConnection)
         wfdConnectedView.visibility = if(wfdHasConnection)View.VISIBLE else View.GONE

@@ -11,16 +11,15 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentapplication.R
-import com.example.studentapplication.models.ContentModel
+import com.example.studentapplication.models.ChatContentModel
 import com.example.studentapplication.peerlist.PeerListAdapter
 
-class ChatListAdapter : RecyclerView.Adapter<ChatListAdapter.ViewHolder>(){
-    private val chatList:MutableList<ContentModel> = mutableListOf()
+class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
+    private val chatList:MutableList<ChatContentModel> = mutableListOf()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val messageView: TextView = itemView.findViewById(R.id.messageTextView)
     }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_item, parent, false)
         return ViewHolder(view)
@@ -37,8 +36,9 @@ class ChatListAdapter : RecyclerView.Adapter<ChatListAdapter.ViewHolder>(){
         return chatList.size
     }
 
-    fun addItemToEnd(contentModel: ContentModel){
+    fun addItemToEnd(contentModel: ChatContentModel){
         chatList.add(contentModel)
         notifyItemInserted(chatList.size)
     }
+
 }
