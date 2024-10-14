@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">StudentApplication</string>
+    <string name="search_for_classes">Search for Classes</string>
+    <string name="your_wifi_direct_adapter_is_off">Your WiFi Direct Adapter is off. Please ensure that WiFi is turned on in settings!</string>
+    <string name="enter_message">Enter message</string>
+    <string name="wifi_direct_error">WiFi Direct - Error</string>
+    <string name="attendance_and_feedback_system">Attendance and Feedback System</string>
+    <string name="enter_student_id">Enter Student ID</string>
 </resources>
