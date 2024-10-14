@@ -34,7 +34,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
     private var hasDevices = false
 
     // Declare the input field and button
-    private lateinit var enterStudentID: EditText
+    private lateinit var etEnterStudentID: EditText
     private lateinit var btnSearchForClass: View
 
     private val intentFilter = IntentFilter().apply {
@@ -49,8 +49,8 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         enableEdgeToEdge()
         setContentView(R.layout.activity_communication)
         // Initialize the input field and button
-        enterStudentID = findViewById(R.id.enterStudentID)
-        btnSearchForClass = findViewById(R.id.SearchForClassBtn)
+        etEnterStudentID = findViewById(R.id.etEnterStudentID)
+        btnSearchForClass = findViewById(R.id.btnSearchForClassBtn)
 
         btnSearchForClass.setOnClickListener { view ->
             searchForClasses(view)
@@ -66,14 +66,16 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         wfdManager = WifiDirectManager(manager, channel, this)
 
         peerListAdapter = PeerListAdapter(this)
-        val rvPeerList: RecyclerView= findViewById(R.id.PeerListing)
-        rvPeerList.adapter = peerListAdapter
-        rvPeerList.layoutManager = LinearLayoutManager(this)
+        val peerList: RecyclerView= findViewById(R.id.rvPeerListing)
+        peerList.adapter = peerListAdapter
+        peerList.layoutManager = LinearLayoutManager(this)
+
+
     }
 
     // Search for classes only if student ID is valid
     private fun searchForClasses(view: View) {
-        val studentIdInput: EditText = findViewById(R.id.enterStudentID)
+        val studentIdInput: EditText = findViewById(R.id.etEnterStudentID)
         if (isValidStudentID()) {
             // Valid ID, proceed to discover peers
             discoverNearbyPeers(view)
@@ -87,7 +89,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
 
     // Helper function to validate student ID (e.g., must be 8 digits)
     private fun isValidStudentID(): Boolean {
-        val studentID = findViewById<EditText>(R.id.enterStudentID).text.toString()
+        val studentID = findViewById<EditText>(R.id.etEnterStudentID).text.toString()
         return studentID.length == 9
     }
 
@@ -159,11 +161,11 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val wfdNoConnectionView:ConstraintLayout = findViewById(R.id.clNoWifiDirectConnection)
         wfdNoConnectionView.visibility = if (wfdAdapterEnabled && !wfdHasConnection) View.VISIBLE else View.GONE
 
-        val tvNearbyClasses: TextView = findViewById(R.id.NearbyClasses)
-        tvNearbyClasses.visibility = if (wfdAdapterEnabled && !wfdHasConnection && isValidStudentID()) View.VISIBLE else View.GONE
+        val nearbyClasses: TextView = findViewById(R.id.tvNearbyClasses)
+        nearbyClasses.visibility = if (wfdAdapterEnabled && !wfdHasConnection && isValidStudentID()) View.VISIBLE else View.GONE
 
-        val rvPeerList: RecyclerView= findViewById(R.id.PeerListing)
-        rvPeerList.visibility = if (wfdAdapterEnabled && !wfdHasConnection && hasDevices && isValidStudentID()) View.VISIBLE else View.GONE
+        val noPeersMessage: TextView = findViewById(R.id.tvNoPeersMessage)
+        noPeersMessage.visibility = if (wfdAdapterEnabled && !wfdHasConnection && !hasDevices && isValidStudentID()) View.VISIBLE else View.GONE
 
         val wfdConnectedView:ConstraintLayout = findViewById(R.id.clHasConnection)
         wfdConnectedView.visibility = if(wfdHasConnection)View.VISIBLE else View.GONE

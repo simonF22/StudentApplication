@@ -13,7 +13,7 @@ class PeerListAdapter(private val peerHandler:PeerListAdapterInterface): Recycle
     private val peersList:MutableList<WifiP2pDevice> = mutableListOf()
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val titleTextView: TextView = itemView.findViewById(R.id.titleTextView)
+        val peer: TextView = itemView.findViewById(R.id.Peer)
         //val descriptionTextView: TextView = itemView.findViewById(R.id.descriptionTextView)
     }
 
@@ -25,7 +25,7 @@ class PeerListAdapter(private val peerHandler:PeerListAdapterInterface): Recycle
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val peer = peersList[position]
 
-        holder.titleTextView.text = peer.deviceName
+        holder.peer.text = peer.deviceName
         //holder.descriptionTextView.text = peer.deviceAddress
 
         holder.itemView.setOnClickListener {
