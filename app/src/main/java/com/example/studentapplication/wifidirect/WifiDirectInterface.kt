@@ -2,6 +2,7 @@ package com.example.studentapplication.wifidirect
 
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pGroup
+import android.net.wifi.p2p.WifiP2pInfo
 
 interface WifiDirectInterface {
     fun onWiFiDirectStateChanged(isEnabled:Boolean)

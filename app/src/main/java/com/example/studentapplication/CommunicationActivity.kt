@@ -6,9 +6,11 @@ import android.content.IntentFilter
 import android.net.Uri
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pGroup
+import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -25,15 +27,22 @@ import com.example.studentapplication.peerlist.PeerListAdapterInterface
 import com.example.studentapplication.wifidirect.WifiDirectInterface
 import com.example.studentapplication.wifidirect.WifiDirectManager
 import com.example.studentapplication.chatlist.ChatListAdapter
+import com.example.studentapplication.models.ChatContentModel
+import com.example.studentapplication.network.NetworkMessageInterface
+import com.example.studentapplication.network.Client
 
-class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerListAdapterInterface {
+class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerListAdapterInterface, NetworkMessageInterface {
     private var wfdManager: WifiDirectManager? = null
     private var peerListAdapter:PeerListAdapter? = null
     private var chatListAdapter:ChatListAdapter? = null
+    private var client: Client? = null
 
     private var wfdAdapterEnabled = false
     private var wfdHasConnection = false
     private var hasDevices = false
+
+    private var deviceIp: String = ""
+    private var studentID : String = ""
 
     //the input field and button
     private lateinit var etEnterStudentID: EditText
@@ -76,13 +85,11 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val chat: RecyclerView = findViewById(R.id.rvChat)
         chat.adapter = chatListAdapter
         chat.layoutManager = LinearLayoutManager(this)
-
-
     }
 
     // Search for classes only if student ID is valid
     private fun searchForClasses(view: View) {
-        val studentIdInput: EditText = findViewById(R.id.etEnterStudentID)
+        studentID = findViewById<EditText>(R.id.etEnterStudentID).text.toString()
         if (isValidStudentID()) {
             // Valid ID, proceed to discover peers
             discoverNearbyPeers(view)
@@ -141,15 +148,32 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
     }
 
     override fun onGroupStatusChanged(groupInfo: WifiP2pGroup?) {
-        val text = if (groupInfo == null){
-            "Group is not formed"
+        val text : String
+        if (groupInfo == null){
+            text = "Group is not formed"
         } else {
-            "Group has been formed"
+            text = "Group has been formed"
+            val className = groupInfo.owner.deviceName
+            findViewById<TextView>(R.id.tvClassName).text = className
+            chatListAdapter?.setGroupInfo(groupInfo)
         }
+
         val toast = Toast.makeText(this, text , Toast.LENGTH_SHORT)
         toast.show()
         wfdHasConnection = groupInfo != null
 
+        if (groupInfo == null){
+            client?.close()
+        } else if (!groupInfo.isGroupOwner && client == null) {
+            val goIp = groupInfo.owner.deviceAddress
+            //client = Client(this, goIp)
+            //deviceIp = client!!.ip
+            client = Client(this, goIp, studentID)
+            deviceIp = client!!.ip
+            client?.sendInitialMessage()
+        }
+
+        updateUI()
     }
 
     override fun onDeviceStatusChanged(thisDevice: WifiP2pDevice) {
@@ -179,6 +203,24 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
 
         val wfdConnectedView:ConstraintLayout = findViewById(R.id.clHasConnection)
         wfdConnectedView.visibility = if(wfdHasConnection)View.VISIBLE else View.GONE
+
+        //val className :TextView = findViewById(R.id.tvClassName)
+        //className.visibility = if(wfdHasConnection)View.VISIBLE else View.GONE
+    }
+
+    fun sendMessage(view: View) {
+        val etMessage:EditText = findViewById(R.id.etMessage)
+        val etString = etMessage.text.toString()
+        val content = ChatContentModel(etString, deviceIp)
+        etMessage.text.clear()
+        client?.sendMessage(content)
+        chatListAdapter?.addItemToEnd(content)
+    }
+
+    override fun onContent(content: ChatContentModel) {
+        runOnUiThread{
+                chatListAdapter?.addItemToEnd(content)
+        }
     }
 
     fun goToSettings(view: View) {

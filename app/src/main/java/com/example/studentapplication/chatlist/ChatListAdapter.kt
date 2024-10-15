@@ -2,6 +2,7 @@ package com.example.studentapplication.chatlist
 
 import android.annotation.SuppressLint
 import android.net.wifi.p2p.WifiP2pDevice
+import android.net.wifi.p2p.WifiP2pGroup
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +17,10 @@ import com.example.studentapplication.peerlist.PeerListAdapter
 
 class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
     private val chatList:MutableList<ChatContentModel> = mutableListOf()
+    private var groupInfo: WifiP2pGroup? = null
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val messageView: TextView = itemView.findViewById(R.id.messageTextView)
+        val messageView: TextView = itemView.findViewById(R.id.tvMessage)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.chat_item, parent, false)
@@ -27,9 +29,8 @@ class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val chat = chatList[position]
-        (holder.messageView.parent as RelativeLayout).gravity = if (chat.senderIp=="192.168.49.1") Gravity.START else Gravity.END
+        (holder.messageView.parent as RelativeLayout).gravity = if (chat.senderIp==groupInfo?.owner?.deviceAddress) Gravity.START else Gravity.END
         holder.messageView.text = chat.message
-
     }
 
     override fun getItemCount(): Int {
@@ -39,6 +40,11 @@ class ChatListAdapter: RecyclerView.Adapter<ChatListAdapter.ViewHolder>() {
     fun addItemToEnd(contentModel: ChatContentModel){
         chatList.add(contentModel)
         notifyItemInserted(chatList.size)
+    }
+
+    fun setGroupInfo(groupInfo: WifiP2pGroup?) {
+        this.groupInfo = groupInfo
+        notifyDataSetChanged() // Refresh the list if necessary
     }
 
 }
