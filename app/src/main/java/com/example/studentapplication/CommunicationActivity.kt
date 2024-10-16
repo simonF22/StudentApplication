@@ -62,10 +62,10 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         // Initialize the input field and button
         etEnterStudentID = findViewById(R.id.etEnterStudentID)
         btnSearchForClass = findViewById(R.id.btnSearchForClassBtn)
-
-        btnSearchForClass.setOnClickListener { view ->
+        test()
+        /*btnSearchForClass.setOnClickListener { view ->
             searchForClasses(view)
-        }
+        }*/
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -226,5 +226,10 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
     fun goToSettings(view: View) {
         val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
         startActivity(intent)
+    }
+
+    fun test(){
+        wfdHasConnection = true
+        updateUI()
     }
 }

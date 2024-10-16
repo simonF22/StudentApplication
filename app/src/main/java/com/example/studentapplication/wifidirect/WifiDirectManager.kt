@@ -51,20 +51,20 @@ class WifiDirectManager(
                         Log.e("WFDManager", "This device is the GO. Disconnecting as the student should not be the GO...")
                         disconnect()
                         Toast.makeText(context, "You cannot join the class as the Group Owner(GO). Try again.", Toast.LENGTH_SHORT).show()
-                    } else {
-                        val tmpGroupInfo = when {
-                            !(wifiP2pInfo.groupFormed) -> null
-                            Build.VERSION.SDK_INT >= 33 -> intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP, WifiP2pGroup::class.java)!!
-                            else -> @Suppress("DEPRECATION") intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP)!!
-                        }
-                        if (groupInfo != tmpGroupInfo) {
-                            groupInfo = tmpGroupInfo
-                            Log.e("WFDManager", "The group status has changed")
-                            wfdHandler.onGroupStatusChanged(groupInfo)
-                        }
                     }
                 }
+                val tmpGroupInfo = when {
+                    !(wifiP2pInfo.groupFormed) -> null
+                    Build.VERSION.SDK_INT >= 33 -> intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP, WifiP2pGroup::class.java)!!
+                    else -> @Suppress("DEPRECATION") intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP)!!
+                }
+                if (groupInfo != tmpGroupInfo) {
+                    groupInfo = tmpGroupInfo
+                    Log.e("WFDManager", "The group status has changed")
+                    wfdHandler.onGroupStatusChanged(groupInfo)
+                }
             }
+
             WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION -> {
                 val thisDevice = when{
                     Build.VERSION.SDK_INT >= 33 -> intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE, WifiP2pDevice::class.java)!!

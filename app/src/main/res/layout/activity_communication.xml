@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="56dp"
             android:gravity="center"
-            android:text="@string/your_wifi_direct_adapter_is_off"
+            android:text="@string/wifi_direct_adapter_off"
             android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -144,7 +144,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:visibility="visible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNearbyClasses" />
@@ -156,52 +155,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="24dp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvCurrentlyAttending"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="2dp"
-            android:layout_marginTop="12dp"
-            android:text="Currently Attending: "
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:visibility="visible"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tvClassName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:visibility="visible"
-            app:layout_constraintStart_toEndOf="@id/tvCurrentlyAttending"
-            app:layout_constraintTop_toTopOf="@id/tvCurrentlyAttending" />
+            <TextView
+                android:id="@+id/tvCurrentlyAttending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:text="Currently Attending: "
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvClassName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="18sp"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvChat"
             android:layout_width="360dp"
-            android:layout_height="450dp"
-            android:visibility="visible"
+            android:layout_height="480dp"
             app:layout_constraintBottom_toTopOf="@id/llChatSend"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.685" />
+            app:layout_constraintVertical_bias="0.6" />
 
         <LinearLayout
             android:id="@+id/llChatSend"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:orientation="horizontal"
-            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -219,11 +218,12 @@
                 android:textColorHint="#546E7A" />
 
             <Button
+                android:id="@+id/btnSendMessage"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
                 android:onClick="sendMessage"
-                android:text="send" />
+                android:text="Send" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

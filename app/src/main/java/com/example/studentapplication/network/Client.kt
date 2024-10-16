@@ -27,7 +27,7 @@ class Client (private val networkMessageInterface: NetworkMessageInterface, goIp
             reader = clientSocket.inputStream.bufferedReader()
             writer = clientSocket.outputStream.bufferedWriter()
             ip = clientSocket.inetAddress.hostAddress!!
-            sendInitialMessage()
+
             while(true){
                 try{
                     val serverResponse = reader.readLine()
