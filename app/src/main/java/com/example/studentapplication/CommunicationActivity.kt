@@ -235,6 +235,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         startActivity(intent)
     }
 
+    // just to see how chat screen displays
     fun test(){
         wfdHasConnection = true
         updateUI()

@@ -185,6 +185,7 @@
                 android:textSize="18sp"/>
         </LinearLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvChat"
             android:layout_width="360dp"
