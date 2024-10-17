@@ -151,8 +151,10 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val text : String
         if (groupInfo == null){
             text = "Group is not formed"
+            Log.e("WFDManager", "group is not formed")
         } else {
             text = "Group has been formed"
+            Log.e("WFDManager", "group is formed")
             val className = groupInfo.owner.deviceName
             findViewById<TextView>(R.id.tvClassName).text = className
             chatListAdapter?.setGroupInfo(groupInfo)
@@ -161,6 +163,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val toast = Toast.makeText(this, text , Toast.LENGTH_SHORT)
         toast.show()
         wfdHasConnection = groupInfo != null
+        //updateUI()
 
         if (groupInfo == null){
             client?.close()
@@ -173,7 +176,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
             //client?.sendInitialMessage()
         }
 
-        updateUI()
+        //updateUI()
     }
 
     override fun onDeviceStatusChanged(thisDevice: WifiP2pDevice) {

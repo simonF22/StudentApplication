@@ -29,7 +29,7 @@ class Client (
 
     init {
         thread {
-            clientSocket = Socket(goIp, 8888)
+            clientSocket = Socket(goIp, 9999)
             reader = clientSocket.inputStream.bufferedReader()
             writer = clientSocket.outputStream.bufferedWriter()
             clientIp = clientSocket.inetAddress.hostAddress!!
@@ -68,18 +68,18 @@ class Client (
 
     }
 
-    /*private fun handleServerResponse(response: String) {
+    private fun handleServerResponse(response: String) {
         // Check if the response is the random number R
         val serverContent = Gson().fromJson(response, ChatContentModel::class.java)
-
-        if (serverContent.message.startsWith("R:")) {
+        networkMessageInterface.onContent(serverContent)
+        /*if (serverContent.message.startsWith("R:")) {
             val randomNumber = serverContent.message.removePrefix("R:")
             //authenticateStudent(randomNumber)
         } else {
             // Handle other messages (chat messages)
             networkMessageInterface.onContent(serverContent)
-        }
-    }*/
+        }*/
+    }
 
     /*private fun authenticateStudent(randomNumber: String) {
         val studentHash = encrypter.hashStrSha256(studentID)
