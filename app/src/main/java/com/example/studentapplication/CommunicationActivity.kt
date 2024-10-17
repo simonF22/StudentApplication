@@ -41,7 +41,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
     private var wfdHasConnection = false
     private var hasDevices = false
 
-    private var deviceIp: String = ""
+    private var deviceIp : String = ""
     private var studentID : String = ""
 
     //the input field and button
@@ -62,10 +62,10 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         // Initialize the input field and button
         etEnterStudentID = findViewById(R.id.etEnterStudentID)
         btnSearchForClass = findViewById(R.id.btnSearchForClassBtn)
-        test()
-        /*btnSearchForClass.setOnClickListener { view ->
+
+        btnSearchForClass.setOnClickListener { view ->
             searchForClasses(view)
-        }*/
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -169,8 +169,8 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
             //client = Client(this, goIp)
             //deviceIp = client!!.ip
             client = Client(this, goIp, studentID)
-            deviceIp = client!!.ip
-            client?.sendInitialMessage()
+            deviceIp = client!!.clientIp
+            //client?.sendInitialMessage()
         }
 
         updateUI()
@@ -213,8 +213,15 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val etString = etMessage.text.toString()
         val content = ChatContentModel(etString, deviceIp)
         etMessage.text.clear()
-        client?.sendMessage(content)
         chatListAdapter?.addItemToEnd(content)
+        /*if (client?.isAuthenticated == true) {
+            // Send encrypted message if authenticated
+            client?.sendMessageEncrypted(content)
+        } else {
+            // Send normal message (shouldn't happen after authentication, but just in case)
+            client?.sendMessage(content)
+        }*/
+        client?.sendMessage(content)
     }
 
     override fun onContent(content: ChatContentModel) {
