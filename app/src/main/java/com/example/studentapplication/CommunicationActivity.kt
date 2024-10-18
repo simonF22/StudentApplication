@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import java.net.InetAddress
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -147,7 +148,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         updateUI()
     }
 
-    override fun onGroupStatusChanged(groupInfo: WifiP2pGroup?) {
+    override fun onGroupStatusChanged(groupInfo: WifiP2pGroup?, wifiP2pInfo: WifiP2pInfo) {
         val text : String
 
         if (groupInfo == null){
@@ -156,7 +157,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         } else {
             text = "Group has been formed"
             Log.e("WFDManager", "group is formed")
-            val className = groupInfo.owner.deviceName
+            val className = groupInfo.networkName
             findViewById<TextView>(R.id.tvClassName).text = className
             chatListAdapter?.setGroupInfo(groupInfo)
         }
@@ -164,20 +165,17 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val toast = Toast.makeText(this, text , Toast.LENGTH_SHORT)
         toast.show()
         wfdHasConnection = groupInfo != null
-        //updateUI()
 
         if (groupInfo == null){
             client?.close()
-        } else if (!groupInfo.isGroupOwner && client == null) {
-            val goIp = groupInfo.owner.deviceAddress
-            //client = Client(this, goIp)
-            //deviceIp = client!!.ip
-            client = Client(this, goIp, studentID)
+        }
+        if (!(groupInfo!!.isGroupOwner) && (client == null)) {
+            var goIp : String? = null
+            goIp = wifiP2pInfo.groupOwnerAddress.hostAddress
+            client = Client(this, goIp!!, studentID)
             deviceIp = client!!.clientIp
             //client?.sendInitialMessage()
         }
-
-        //updateUI()
     }
 
     override fun onDeviceStatusChanged(thisDevice: WifiP2pDevice) {

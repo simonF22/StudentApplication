@@ -15,7 +15,7 @@ import kotlin.concurrent.thread
 
 class Client (
     private val networkMessageInterface: NetworkMessageInterface,
-    private val goIp: String,
+    private val goIp : String,
     private val studentID : String){
 
     private lateinit var clientSocket: Socket

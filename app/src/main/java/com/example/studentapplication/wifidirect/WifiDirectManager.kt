@@ -55,7 +55,7 @@ class WifiDirectManager(
                 if (groupInfo != tmpGroupInfo) {
                     groupInfo = tmpGroupInfo
                     Log.e("WFDManager", "The group status has changed")
-                    wfdHandler.onGroupStatusChanged(groupInfo)
+                    wfdHandler.onGroupStatusChanged(groupInfo,wifiP2pInfo)
                 }
             }
 
