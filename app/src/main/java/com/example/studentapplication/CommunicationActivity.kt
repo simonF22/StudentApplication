@@ -162,9 +162,9 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
             chatListAdapter?.setGroupInfo(groupInfo)
         }
 
-        val toast = Toast.makeText(this, text , Toast.LENGTH_SHORT)
+        var toast = Toast.makeText(this, text , Toast.LENGTH_SHORT)
         toast.show()
-        wfdHasConnection = groupInfo != null
+        wfdHasConnection = (groupInfo != null)
 
         if (groupInfo == null){
             client?.close()
@@ -175,6 +175,10 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
             client = Client(this, goIp!!, studentID)
             deviceIp = client!!.clientIp
             //client?.sendInitialMessage()
+            if (client != null) {
+                toast = Toast.makeText(this, "connection to server established", Toast.LENGTH_SHORT)
+                toast.show()
+            }
         }
     }
 
