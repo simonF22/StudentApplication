@@ -46,11 +46,15 @@ class WifiDirectManager(
                     Build.VERSION.SDK_INT >= 33 -> intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO, WifiP2pInfo::class.java)!!
                     else -> @Suppress("DEPRECATION") intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO)!!
                 }
-
                 val tmpGroupInfo = when {
                     !(wifiP2pInfo.groupFormed) -> null
                     Build.VERSION.SDK_INT >= 33 -> intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP, WifiP2pGroup::class.java)!!
                     else -> @Suppress("DEPRECATION") intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP)!!
+                }
+
+                if (tmpGroupInfo == null){
+                    Log.e("WFDManager", "no connection established")
+                    wfdHandler.onGroupStatusChanged(groupInfo,wifiP2pInfo)
                 }
                 if (groupInfo != tmpGroupInfo) {
                     groupInfo = tmpGroupInfo
@@ -78,7 +82,6 @@ class WifiDirectManager(
             deviceAddress = peer.deviceAddress
             groupOwnerIntent = 0
         }
-
         manager.connect(channel, config, object : ActionListener {
             override fun onSuccess() {
                 Log.e("WFDManager","Successfully attempted to connect to a peer '${peer.deviceName}'")

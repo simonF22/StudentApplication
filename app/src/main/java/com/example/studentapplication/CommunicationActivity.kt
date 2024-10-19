@@ -165,19 +165,20 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         var toast = Toast.makeText(this, text , Toast.LENGTH_SHORT)
         toast.show()
         wfdHasConnection = (groupInfo != null)
+        updateUI()
 
         if (groupInfo == null){
             client?.close()
-        }
-        if (!(groupInfo!!.isGroupOwner) && (client == null)) {
+        } else if (!groupInfo!!.isGroupOwner && (client == null)) {
             var goIp : String? = null
             goIp = wifiP2pInfo.groupOwnerAddress.hostAddress
             client = Client(this, goIp!!, studentID)
             deviceIp = client!!.clientIp
             //client?.sendInitialMessage()
             if (client != null) {
-                toast = Toast.makeText(this, "connection to server established", Toast.LENGTH_SHORT)
-                toast.show()
+                Log.e("WFDManager", "connection to server established")
+            } else {
+                Log.e("WFDManager", "connection to server NOT established")
             }
         }
     }
