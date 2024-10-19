@@ -74,8 +74,11 @@ class WifiDirectManager(
 
     @SuppressLint("MissingPermission")
     fun connectToPeer(peer: WifiP2pDevice) {
-        val config = WifiP2pConfig()
-        config.deviceAddress = peer.deviceAddress
+        val config = WifiP2pConfig().apply {
+            deviceAddress = peer.deviceAddress
+            groupOwnerIntent = 0
+        }
+
         manager.connect(channel, config, object : ActionListener {
             override fun onSuccess() {
                 Log.e("WFDManager","Successfully attempted to connect to a peer '${peer.deviceName}'")
