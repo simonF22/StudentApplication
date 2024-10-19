@@ -31,6 +31,7 @@ import com.example.studentapplication.chatlist.ChatListAdapter
 import com.example.studentapplication.models.ChatContentModel
 import com.example.studentapplication.network.NetworkMessageInterface
 import com.example.studentapplication.network.Client
+import kotlin.concurrent.thread
 
 class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerListAdapterInterface, NetworkMessageInterface {
     private var wfdManager: WifiDirectManager? = null
@@ -153,10 +154,8 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
 
         if (groupInfo == null){
             text = "Group is not formed"
-            Log.e("WFDManager", "group is not formed")
         } else {
             text = "Group has been formed"
-            Log.e("WFDManager", "group is formed")
             val className = groupInfo.networkName
             findViewById<TextView>(R.id.tvClassName).text = className
             chatListAdapter?.setGroupInfo(groupInfo)
@@ -167,22 +166,20 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         wfdHasConnection = (groupInfo != null)
         updateUI()
 
-        if (groupInfo == null){
+        /*if (groupInfo == null){
             client?.close()
         } else if (!groupInfo!!.isGroupOwner && (client == null)) {
             var goIp : String? = null
             goIp = wifiP2pInfo.groupOwnerAddress.hostAddress
-            client = Client(this)
-            client!!.goIp = goIp
-            client!!.studentID = studentID
-            deviceIp = client!!.clientIp
-            //client?.sendInitialMessage()
-            if (client != null) {
-                Log.e("WFDManager", "connection to server established")
-            } else {
-                Log.e("WFDManager", "connection to server NOT established")
+            thread {
+                client = Client(this)
+                client!!.goIp = goIp
+                client!!.studentID = studentID
+                deviceIp = client!!.clientIp
+                Log.d("WFDManager", goIp)
             }
-        }
+            //client?.sendInitialMessage()
+        }*/
     }
 
     override fun onDeviceStatusChanged(thisDevice: WifiP2pDevice) {
@@ -237,6 +234,10 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         runOnUiThread{
                 chatListAdapter?.addItemToEnd(content)
         }
+    }
+
+    fun disconnect(view: View){
+     wfdManager?.disconnect()
     }
 
     fun goToSettings(view: View) {
