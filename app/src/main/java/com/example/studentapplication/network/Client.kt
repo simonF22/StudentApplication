@@ -14,13 +14,13 @@ import kotlin.concurrent.thread
 
 
 class Client (
-    private val networkMessageInterface: NetworkMessageInterface,
-    private val goIp : String,
-    private val studentID : String){
+    private val networkMessageInterface: NetworkMessageInterface,){
 
     private lateinit var clientSocket: Socket
     private lateinit var reader: BufferedReader
     private lateinit var writer: BufferedWriter
+    var studentID : String = ""
+    var goIp : String = ""
     var clientIp:String = ""
     private val encrypter = Encrypter()
     private var aesKey: SecretKeySpec? = null

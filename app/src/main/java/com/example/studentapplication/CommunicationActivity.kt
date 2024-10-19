@@ -172,7 +172,9 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         } else if (!groupInfo!!.isGroupOwner && (client == null)) {
             var goIp : String? = null
             goIp = wifiP2pInfo.groupOwnerAddress.hostAddress
-            client = Client(this, goIp!!, studentID)
+            client = Client(this)
+            client!!.goIp = goIp
+            client!!.studentID = studentID
             deviceIp = client!!.clientIp
             //client?.sendInitialMessage()
             if (client != null) {
