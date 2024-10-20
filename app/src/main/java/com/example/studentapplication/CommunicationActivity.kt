@@ -31,6 +31,9 @@ import com.example.studentapplication.chatlist.ChatListAdapter
 import com.example.studentapplication.models.ChatContentModel
 import com.example.studentapplication.network.NetworkMessageInterface
 import com.example.studentapplication.network.Client
+import java.net.Inet4Address
+import java.net.NetworkInterface
+import java.net.SocketException
 import kotlin.concurrent.thread
 
 class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerListAdapterInterface, NetworkMessageInterface {
@@ -45,10 +48,11 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
 
     private var deviceIp : String = ""
     private var studentID : String = ""
+    private var goIp : String = ""
 
-    //the input field and button
     private lateinit var etEnterStudentID: EditText
     private lateinit var btnSearchForClass: View
+    private lateinit var chatView : RecyclerView
 
     private val intentFilter = IntentFilter().apply {
         addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION)
@@ -83,10 +87,10 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         peerList.adapter = peerListAdapter
         peerList.layoutManager = LinearLayoutManager(this)
 
+        chatView = findViewById(R.id.rvChat)
         chatListAdapter = ChatListAdapter()
-        val chat: RecyclerView = findViewById(R.id.rvChat)
-        chat.adapter = chatListAdapter
-        chat.layoutManager = LinearLayoutManager(this)
+        chatView.adapter = chatListAdapter
+        chatView.layoutManager = LinearLayoutManager(this)
     }
 
     // Search for classes only if student ID is valid
@@ -158,7 +162,6 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
             text = "Group has been formed"
             val className = groupInfo.networkName
             findViewById<TextView>(R.id.tvClassName).text = className
-            chatListAdapter?.setGroupInfo(groupInfo)
         }
 
         var toast = Toast.makeText(this, text , Toast.LENGTH_SHORT)
@@ -166,20 +169,20 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         wfdHasConnection = (groupInfo != null)
         updateUI()
 
-        /*if (groupInfo == null){
+        if (groupInfo == null){
             client?.close()
-        } else if (!groupInfo!!.isGroupOwner && (client == null)) {
-            var goIp : String? = null
-            goIp = wifiP2pInfo.groupOwnerAddress.hostAddress
+            client = null
+        } else if (!groupInfo.isGroupOwner && (client == null)) {
+            //goIp = wifiP2pInfo.groupOwnerAddress.hostAddress
+            //Log.d("WFDManager", goIp)
             thread {
                 client = Client(this)
-                client!!.goIp = goIp
                 client!!.studentID = studentID
                 deviceIp = client!!.clientIp
-                Log.d("WFDManager", goIp)
+                goIp = client!!.goIp
             }
             //client?.sendInitialMessage()
-        }*/
+        }
     }
 
     override fun onDeviceStatusChanged(thisDevice: WifiP2pDevice) {
@@ -249,5 +252,30 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
     fun test(){
         wfdHasConnection = true
         updateUI()
+    }
+
+    fun getLocalIpAddress(): String {
+        try {
+            // Get all network interfaces
+            val interfaces = NetworkInterface.getNetworkInterfaces()
+            while (interfaces.hasMoreElements()) {
+                val networkInterface = interfaces.nextElement()
+
+                // Filter out loopback and inactive interfaces
+                if (!networkInterface.isLoopback && networkInterface.isUp) {
+                    val addresses = networkInterface.inetAddresses
+                    while (addresses.hasMoreElements()) {
+                        val address = addresses.nextElement()
+                        // Check for IPv4 address
+                        if (address is Inet4Address) {
+                            return address.hostAddress
+                        }
+                    }
+                }
+            }
+        } catch (e: SocketException) {
+            e.printStackTrace()
+        }
+        return "0.0.0.0" // Default value if no IP found
     }
 }

@@ -20,7 +20,7 @@ class Client (
     private lateinit var reader: BufferedReader
     private lateinit var writer: BufferedWriter
     var studentID : String = ""
-    var goIp : String = ""
+    var goIp : String = "192.168.49.1"
     var clientIp:String = ""
     private val encrypter = Encrypter()
     private var aesKey: SecretKeySpec? = null
@@ -29,16 +29,14 @@ class Client (
 
     init {
         thread {
-            clientSocket = Socket(goIp, 9999)
+            clientSocket = Socket("192.168.49.1", 9999)
             reader = clientSocket.inputStream.bufferedReader()
             writer = clientSocket.outputStream.bufferedWriter()
             clientIp = clientSocket.inetAddress.hostAddress!!
-
             while(true){
                 try{
                     val serverResponse = reader.readLine()
                     if (serverResponse != null){
-                        //handleServerResponse(serverResponse)
                         val serverContent = Gson().fromJson(serverResponse, ChatContentModel::class.java)
                         networkMessageInterface.onContent(serverContent)
                     }
@@ -65,13 +63,20 @@ class Client (
             writer.write("$contentAsStr\n")
             writer.flush()
         }
-
     }
 
     private fun handleServerResponse(response: String) {
         // Check if the response is the random number R
-        val serverContent = Gson().fromJson(response, ChatContentModel::class.java)
-        networkMessageInterface.onContent(serverContent)
+        try{
+            if (response!= null){
+                Log.e("SERVER", "Received a message from client")
+                val clientContent = Gson().fromJson(response, ChatContentModel::class.java)
+                networkMessageInterface.onContent(clientContent)
+            }
+        } catch (e: Exception){
+            Log.e("SERVER", "An error has occurred with the client")
+            e.printStackTrace()
+        }
         /*if (serverContent.message.startsWith("R:")) {
             val randomNumber = serverContent.message.removePrefix("R:")
             //authenticateStudent(randomNumber)
