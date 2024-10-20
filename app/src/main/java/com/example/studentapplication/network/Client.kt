@@ -49,10 +49,10 @@ class Client (
         }
     }
 
-    /*fun sendInitialMessage() {
+    fun sendInitialMessage(clientIp : String) {
         val initialMessage = "I am here"
         sendMessage(ChatContentModel(initialMessage, clientIp))
-    }*/
+    }
 
     fun sendMessage(content: ChatContentModel){
         thread {
@@ -77,41 +77,8 @@ class Client (
             Log.e("SERVER", "An error has occurred with the client")
             e.printStackTrace()
         }
-        /*if (serverContent.message.startsWith("R:")) {
-            val randomNumber = serverContent.message.removePrefix("R:")
-            //authenticateStudent(randomNumber)
-        } else {
-            // Handle other messages (chat messages)
-            networkMessageInterface.onContent(serverContent)
-        }*/
     }
 
-    /*private fun authenticateStudent(randomNumber: String) {
-        val studentHash = encrypter.hashStrSha256(studentID)
-        aesKey = encrypter.generateAESKey(studentHash)
-        aesIv = encrypter.generateIV(studentHash)
-        val encryptedResponse = encrypter.encryptMessage(randomNumber, encrypter.generateAESKey(studentHash), encrypter.generateIV(studentHash))
-
-        sendMessage(ChatContentModel(encryptedResponse, clientIp))
-        isAuthenticated = true
-    }
-
-    fun sendMessageEncrypted(content: ChatContentModel) {
-        thread {
-            if (!clientSocket.isConnected) {
-                throw Exception("We aren't currently connected to the server!")
-            }
-            // Ensure aesKey and aesIv are initialized after authentication
-            if (aesKey != null && aesIv != null && isAuthenticated) {
-                val encryptedContent = encrypter.encryptMessage(content.message, aesKey!!, aesIv!!)
-                val encryptedChatContent = ChatContentModel(encryptedContent, clientIp)
-                writer.write("${Gson().toJson(encryptedChatContent)}\n")
-            } else {
-                throw Exception("Encryption keys are not initialized or authentication is incomplete!")
-            }
-            writer.flush()
-        }
-    }*/
 
     fun close(){
         clientSocket.close()

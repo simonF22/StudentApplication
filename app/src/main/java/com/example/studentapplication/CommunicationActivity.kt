@@ -8,6 +8,7 @@ import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pGroup
 import android.net.wifi.p2p.WifiP2pInfo
 import android.net.wifi.p2p.WifiP2pManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -31,9 +32,6 @@ import com.example.studentapplication.chatlist.ChatListAdapter
 import com.example.studentapplication.models.ChatContentModel
 import com.example.studentapplication.network.NetworkMessageInterface
 import com.example.studentapplication.network.Client
-import java.net.Inet4Address
-import java.net.NetworkInterface
-import java.net.SocketException
 import kotlin.concurrent.thread
 
 class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerListAdapterInterface, NetworkMessageInterface {
@@ -45,7 +43,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
     private var wfdAdapterEnabled = false
     private var wfdHasConnection = false
     private var hasDevices = false
-
+    private var thisDevice : WifiP2pDevice? = null
     private var deviceIp : String = ""
     private var studentID : String = ""
     private var goIp : String = ""
@@ -101,15 +99,13 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
             discoverNearbyPeers(view)
             updateUI()
         } else {
-            // Invalid ID, show a Toast message
             Toast.makeText(this, "Please enter a valid Student ID", Toast.LENGTH_SHORT).show()
             updateUI()
         }
     }
 
-    // Helper function to validate student ID (e.g., must be 8 digits)
     private fun isValidStudentID(): Boolean {
-        val studentID = findViewById<EditText>(R.id.etEnterStudentID).text.toString()
+        studentID = findViewById<EditText>(R.id.etEnterStudentID).text.toString()
         return studentID.length == 9
     }
 
@@ -173,15 +169,12 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
             client?.close()
             client = null
         } else if (!groupInfo.isGroupOwner && (client == null)) {
-            //goIp = wifiP2pInfo.groupOwnerAddress.hostAddress
-            //Log.d("WFDManager", goIp)
             thread {
                 client = Client(this)
                 client!!.studentID = studentID
                 deviceIp = client!!.clientIp
                 goIp = client!!.goIp
             }
-            //client?.sendInitialMessage()
         }
     }
 
@@ -212,9 +205,6 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
 
         val wfdConnectedView:ConstraintLayout = findViewById(R.id.clHasConnection)
         wfdConnectedView.visibility = if(wfdHasConnection)View.VISIBLE else View.GONE
-
-        //val className :TextView = findViewById(R.id.tvClassName)
-        //className.visibility = if(wfdHasConnection)View.VISIBLE else View.GONE
     }
 
     fun sendMessage(view: View) {
@@ -223,13 +213,6 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
         val content = ChatContentModel(etString, deviceIp)
         etMessage.text.clear()
         chatListAdapter?.addItemToEnd(content)
-        /*if (client?.isAuthenticated == true) {
-            // Send encrypted message if authenticated
-            client?.sendMessageEncrypted(content)
-        } else {
-            // Send normal message (shouldn't happen after authentication, but just in case)
-            client?.sendMessage(content)
-        }*/
         client?.sendMessage(content)
     }
 
@@ -246,36 +229,5 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
     fun goToSettings(view: View) {
         val intent = Intent(Settings.ACTION_WIRELESS_SETTINGS)
         startActivity(intent)
-    }
-
-    // just to see how chat screen displays
-    fun test(){
-        wfdHasConnection = true
-        updateUI()
-    }
-
-    fun getLocalIpAddress(): String {
-        try {
-            // Get all network interfaces
-            val interfaces = NetworkInterface.getNetworkInterfaces()
-            while (interfaces.hasMoreElements()) {
-                val networkInterface = interfaces.nextElement()
-
-                // Filter out loopback and inactive interfaces
-                if (!networkInterface.isLoopback && networkInterface.isUp) {
-                    val addresses = networkInterface.inetAddresses
-                    while (addresses.hasMoreElements()) {
-                        val address = addresses.nextElement()
-                        // Check for IPv4 address
-                        if (address is Inet4Address) {
-                            return address.hostAddress
-                        }
-                    }
-                }
-            }
-        } catch (e: SocketException) {
-            e.printStackTrace()
-        }
-        return "0.0.0.0" // Default value if no IP found
     }
 }

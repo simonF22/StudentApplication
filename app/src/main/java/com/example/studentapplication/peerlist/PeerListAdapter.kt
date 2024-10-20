@@ -14,7 +14,6 @@ class PeerListAdapter(private val peerHandler:PeerListAdapterInterface): Recycle
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val peer: TextView = itemView.findViewById(R.id.Peer)
-        //val descriptionTextView: TextView = itemView.findViewById(R.id.descriptionTextView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,7 +25,6 @@ class PeerListAdapter(private val peerHandler:PeerListAdapterInterface): Recycle
         val peer = peersList[position]
 
         holder.peer.text = peer.deviceName
-        //holder.descriptionTextView.text = peer.deviceAddress
 
         holder.itemView.setOnClickListener {
             peerHandler.onPeerClicked(peer)
@@ -36,7 +34,6 @@ class PeerListAdapter(private val peerHandler:PeerListAdapterInterface): Recycle
     override fun getItemCount(): Int {
         return peersList.size
     }
-
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(newPeersList:Collection<WifiP2pDevice>){

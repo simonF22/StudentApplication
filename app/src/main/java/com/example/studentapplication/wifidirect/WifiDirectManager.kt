@@ -26,6 +26,7 @@ class WifiDirectManager(
     @SuppressLint("MissingPermission")
     override fun onReceive(context: Context, intent: Intent) {
         when (intent.action) {
+
             WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> {
                 val state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
                 val isWifiP2pEnabled = state == WifiP2pManager.WIFI_P2P_STATE_ENABLED
@@ -40,7 +41,6 @@ class WifiDirectManager(
                 }
             }
 
-
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
                 val wifiP2pInfo = when {
                     Build.VERSION.SDK_INT >= 33 -> intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_INFO, WifiP2pInfo::class.java)!!
@@ -52,10 +52,6 @@ class WifiDirectManager(
                     else -> @Suppress("DEPRECATION") intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_GROUP)!!
                 }
 
-                /*if (tmpGroupInfo == null){
-                    //Log.e("WFDManager", "no connection established")
-                    wfdHandler.onGroupStatusChanged(groupInfo,wifiP2pInfo)
-                }*/
                 if (groupInfo != tmpGroupInfo) {
                     groupInfo = tmpGroupInfo
                     Log.e("WFDManager", "The group status has changed")
@@ -73,8 +69,6 @@ class WifiDirectManager(
             }
         }
     }
-
-
 
     @SuppressLint("MissingPermission")
     fun connectToPeer(peer: WifiP2pDevice) {
