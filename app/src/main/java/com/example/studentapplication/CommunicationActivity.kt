@@ -106,7 +106,13 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
 
     private fun isValidStudentID(): Boolean {
         studentID = findViewById<EditText>(R.id.etEnterStudentID).text.toString()
-        return studentID.length == 9
+
+        // Check if the ID is a 9-digit number within the range 816000000 - 816999999
+        if (studentID.length == 9) {
+            val studentIdNumber = studentID.toLongOrNull() // Convert to Long to handle large numbers
+            return studentIdNumber != null && studentIdNumber in 816000000..816999999
+        }
+        return false
     }
 
     override fun onResume() {
