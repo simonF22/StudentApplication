@@ -51,7 +51,15 @@ class Client (
 
     fun sendInitialMessage(clientIp : String) {
         val initialMessage = "I am here"
-        sendMessage(ChatContentModel(initialMessage, clientIp))
+        val content = ChatContentModel(initialMessage, clientIp)
+        thread {
+            if (!clientSocket.isConnected){
+                throw Exception("We aren't currently connected to the server!")
+            }
+            val contentAsStr:String = Gson().toJson(content)
+            writer.write("$contentAsStr\n")
+            writer.flush()
+        }
     }
 
     fun sendMessage(content: ChatContentModel){

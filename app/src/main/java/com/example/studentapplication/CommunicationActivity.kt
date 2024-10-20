@@ -174,6 +174,7 @@ class CommunicationActivity : AppCompatActivity(), WifiDirectInterface, PeerList
                 client!!.studentID = studentID
                 deviceIp = client!!.clientIp
                 goIp = client!!.goIp
+                //client!!.sendInitialMessage(deviceIp)
             }
         }
     }
